@@ -21,6 +21,12 @@
     </properties>
 
     <dependencies>
+        <!-- Add Spring Boot Starter Web for RESTful services -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
         <!-- Add Spring Boot Starter Data JPA for data access with JPA -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

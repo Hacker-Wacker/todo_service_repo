@@ -43,6 +43,7 @@ public class TodoServiceControllerTest {
 
     @Test
     public void addTodoItemTest() throws Exception {
+        // Test with a valid status
         TodoItemDTO validTodoItemDTO = new TodoItemDTO();
         validTodoItemDTO.setDescription("Test Item");
         validTodoItemDTO.setStatus("not done");
@@ -59,6 +60,16 @@ public class TodoServiceControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1));
+
+        // Test with an invalid status
+        TodoItemDTO invalidTodoItemDTO = new TodoItemDTO();
+        invalidTodoItemDTO.setDescription("Test Item");
+        invalidTodoItemDTO.setStatus("invalid_status");
+
+        mockMvc.perform(post("/api/todoItems/add")
+                        .content(objectMapper.writeValueAsString(invalidTodoItemDTO))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest()); // Expecting a Bad Request status
     }
 
     @Test

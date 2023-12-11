@@ -1,5 +1,6 @@
 package com.todo.dto;
 
+import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
 public class TodoItemDTO {
@@ -7,6 +8,7 @@ public class TodoItemDTO {
 
     private String description;
 
+    @Pattern(regexp = "not done|done|past due", message = "Status must be 'not done', 'done', or 'past due'")
     private String status;
 
     private LocalDateTime creationDateTime;

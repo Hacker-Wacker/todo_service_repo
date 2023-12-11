@@ -58,9 +58,15 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<TodoItemResponseDTO> getTodoItems() {
-        List<TodoItemEntity> notDoneItems = todoItemRepository.findByStatus("not done");
-        return notDoneItems.stream()
+    public List<TodoItemResponseDTO> getNotDoneItems(boolean retrieveAllTodoItems) {
+        List<TodoItemEntity> todoItems;
+        if (retrieveAllTodoItems) {
+            todoItems = todoItemRepository.findAll();
+        } else {
+            todoItems = todoItemRepository.findByStatus("not done");
+        }
+
+        return todoItems.stream()
                 .map(this::mapEntityToResponseDTO)
                 .collect(Collectors.toList());
     }

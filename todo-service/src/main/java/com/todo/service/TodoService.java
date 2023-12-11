@@ -15,7 +15,7 @@ public interface TodoService {
 
     TodoItemResponseDTO markTodoAsNotDone(Long itemId);
 
-    List<TodoItemResponseDTO> getTodoItems();
+    List<TodoItemResponseDTO> getNotDoneItems(boolean retrieveAllTodoItems);
 
     TodoItemResponseDTO getTodoItemDetails(Long itemId);
 }

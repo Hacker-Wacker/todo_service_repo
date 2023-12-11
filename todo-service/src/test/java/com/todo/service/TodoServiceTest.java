@@ -120,19 +120,29 @@ class TodoServiceTest {
     }
 
     @Test
-    void getTodoItems() {
+    void getNotDoneItemsTest() {
         // Arrange
         when(todoItemRepository.findByStatus("not done")).thenReturn(Arrays.asList(
                 new TodoItemEntity(1L, "Task 1", "not done", LocalDateTime.now(), null, null),
                 new TodoItemEntity(2L, "Task 2", "not done", LocalDateTime.now(), null, null)
         ));
 
+        when(todoItemRepository.findAll()).thenReturn(Arrays.asList(
+                new TodoItemEntity(1L, "Task 1", "not done", LocalDateTime.now(), null, null),
+                new TodoItemEntity(2L, "Task 2", "done", LocalDateTime.now(), null, null),
+                new TodoItemEntity(3L, "Task 3", "not done", LocalDateTime.now(), null, null)
+        ));
+
         // Act
-        List<TodoItemResponseDTO> result = todoService.getTodoItems();
+        List<TodoItemResponseDTO> resultNotDone = todoService.getNotDoneItems(false);
+        List<TodoItemResponseDTO> resultAll = todoService.getNotDoneItems(true);
 
         // Assert
-        assertNotNull(result);
-        assertEquals(2, result.size());
+        assertNotNull(resultNotDone);
+        assertEquals(2, resultNotDone.size());
+
+        assertNotNull(resultAll);
+        assertEquals(3, resultAll.size());
     }
 
     @Test

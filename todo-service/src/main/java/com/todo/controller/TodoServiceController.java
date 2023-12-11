@@ -40,8 +40,8 @@ public class TodoServiceController {
     }
 
     @GetMapping("/notDoneItems")
-    public List<TodoItemResponseDTO> getTodoItems() {
-        return todoService.getTodoItems();
+    public List<TodoItemResponseDTO> getNotDoneItems(@RequestParam(required = false, defaultValue = "false") boolean retrieveAllTodoItems) {
+        return todoService.getNotDoneItems(retrieveAllTodoItems);
     }
 
     @GetMapping("/{itemId}")

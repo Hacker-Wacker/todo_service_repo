@@ -123,7 +123,8 @@ public class TodoServiceControllerTest {
     }
 
     @Test
-    public void getTodoItemsTest() throws Exception {
+    public void getNotDoneItemsTest() throws Exception {
+        // Test data for "not done" items
         TodoItemResponseDTO item1 = new TodoItemResponseDTO();
         item1.setId(1L);
         item1.setDescription("Item 1");
@@ -134,14 +135,39 @@ public class TodoServiceControllerTest {
         item2.setDescription("Item 2");
         item2.setStatus("not done");
 
-        List<TodoItemResponseDTO> responseDTOList = List.of(item1, item2);
+        List<TodoItemResponseDTO> notDoneItemsList = List.of(item1, item2);
 
-        when(todoService.getTodoItems()).thenReturn(responseDTOList);
+        when(todoService.getNotDoneItems(false)).thenReturn(notDoneItemsList);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/todoItems/notDoneItems"))
+        // Test for retrieveAllTodoItems=false
+        mockMvc.perform(get("/api/todoItems/notDoneItems"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[1].id").value(2));
+
+        // Test for retrieveAllTodoItems=true
+        List<TodoItemResponseDTO> allTodoItemsList = createAllTodoItemsList();
+        when(todoService.getNotDoneItems(true)).thenReturn(allTodoItemsList);
+
+        mockMvc.perform(get("/api/todoItems/notDoneItems?retrieveAllTodoItems=true"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(allTodoItemsList.get(0).getId()))
+                .andExpect(jsonPath("$[1].id").value(allTodoItemsList.get(1).getId()));
+    }
+
+    private List<TodoItemResponseDTO> createAllTodoItemsList() {
+        // Create a list containing all types of todo items (not just "not done")
+        TodoItemResponseDTO item1 = new TodoItemResponseDTO();
+        item1.setId(3L);
+        item1.setDescription("All Item 1");
+        item1.setStatus("done");
+
+        TodoItemResponseDTO item2 = new TodoItemResponseDTO();
+        item2.setId(4L);
+        item2.setDescription("All Item 2");
+        item2.setStatus("past due");
+
+        return List.of(item1, item2);
     }
 
     @Test

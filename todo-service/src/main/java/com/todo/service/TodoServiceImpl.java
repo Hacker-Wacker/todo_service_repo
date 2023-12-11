@@ -49,7 +49,7 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public TodoItemResponseDTO markTodoAsNotDone(Long itemId) {
-        return null;
+        return updateStatus(itemId, "not done");
     }
 
     @Override

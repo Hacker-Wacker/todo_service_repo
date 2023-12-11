@@ -96,4 +96,24 @@ class TodoServiceTest {
         assertEquals(expectedResponse.getStatus(), result.getStatus());
         assertNotNull(result.getDoneDateTime());
     }
+
+    @Test
+    void markTodoAsNotDoneTest() {
+        // Arrange
+        Long itemId = 1L;
+        TodoItemEntity existingTodo = new TodoItemEntity(itemId, "Task 1", "done", LocalDateTime.now(), LocalDateTime.now(), null);
+        TodoItemResponseDTO expectedResponse = new TodoItemResponseDTO(itemId, "Task 1", "not done", LocalDateTime.now(), null, null);
+
+        when(todoItemRepository.findById(itemId)).thenReturn(Optional.of(existingTodo));
+        when(todoItemRepository.save(any())).thenReturn(new TodoItemEntity(itemId, "Task 1", "not done", LocalDateTime.now(), null, null));
+
+        // Act
+        TodoItemResponseDTO result = todoService.markTodoAsNotDone(itemId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(expectedResponse.getDescription(), result.getDescription());
+        assertEquals(expectedResponse.getStatus(), result.getStatus());
+        assertNull(result.getDoneDateTime());
+    }
 }

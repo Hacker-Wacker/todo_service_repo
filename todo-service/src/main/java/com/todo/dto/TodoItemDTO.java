@@ -1,6 +1,7 @@
 package com.todo.dto;
 
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.Pattern;
+
 import java.time.LocalDateTime;
 
 public class TodoItemDTO {

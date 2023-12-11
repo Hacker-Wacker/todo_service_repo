@@ -3,10 +3,10 @@ package com.todo.controller;
 import com.todo.dto.TodoItemDTO;
 import com.todo.dto.TodoItemResponseDTO;
 import com.todo.service.TodoService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController

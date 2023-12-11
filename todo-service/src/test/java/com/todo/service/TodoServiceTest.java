@@ -11,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -115,5 +117,21 @@ class TodoServiceTest {
         assertEquals(expectedResponse.getDescription(), result.getDescription());
         assertEquals(expectedResponse.getStatus(), result.getStatus());
         assertNull(result.getDoneDateTime());
+    }
+
+    @Test
+    void getTodoItems() {
+        // Arrange
+        when(todoItemRepository.findByStatus("not done")).thenReturn(Arrays.asList(
+                new TodoItemEntity(1L, "Task 1", "not done", LocalDateTime.now(), null, null),
+                new TodoItemEntity(2L, "Task 2", "not done", LocalDateTime.now(), null, null)
+        ));
+
+        // Act
+        List<TodoItemResponseDTO> result = todoService.getTodoItems();
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(2, result.size());
     }
 }

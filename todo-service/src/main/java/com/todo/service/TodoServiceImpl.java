@@ -37,23 +37,31 @@ public class TodoServiceImpl implements TodoService {
     @Transactional
     public TodoItemResponseDTO changeTodoDescription(Long itemId, String newDescription) {
         TodoItemEntity todoItemEntity = getTodoItemEntity(itemId);
-        if (todoItemEntity != null) {
+        if (todoItemEntity != null && !isPastDue(todoItemEntity)) {
             todoItemEntity.setDescription(newDescription);
             return mapEntityToResponseDTO(todoItemEntity);
         }
-        return null; // Item not found
+        return null; // Item not found or past due
     }
 
     @Override
     @Transactional
     public TodoItemResponseDTO markTodoAsDone(Long itemId) {
-        return updateStatus(itemId, "done");
+        TodoItemEntity todoItemEntity = getTodoItemEntity(itemId);
+        if (todoItemEntity != null && !isPastDue(todoItemEntity)) {
+            return updateStatus(itemId, "done");
+        }
+        return null; // Item not found or past due
     }
 
     @Override
     @Transactional
     public TodoItemResponseDTO markTodoAsNotDone(Long itemId) {
-        return updateStatus(itemId, "not done");
+        TodoItemEntity todoItemEntity = getTodoItemEntity(itemId);
+        if (todoItemEntity != null && !isPastDue(todoItemEntity)) {
+            return updateStatus(itemId, "not done");
+        }
+        return null; // Item not found or past due
     }
 
     @Override
@@ -107,5 +115,10 @@ public class TodoServiceImpl implements TodoService {
             return mapEntityToResponseDTO(todoItemEntity);
         }
         return null; // Item not found
+    }
+
+    // Helper method to check if an item is "past due"
+    private boolean isPastDue(TodoItemEntity todoItemEntity) {
+        return "past due".equals(todoItemEntity.getStatus());
     }
 }

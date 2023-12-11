@@ -73,6 +73,14 @@ class TodoServiceTest {
         TodoItemResponseDTO nonExistentResult = todoService.changeTodoDescription(2L, newDescription);
         assertNull(nonExistentResult);
 
+        // Act and Assert for past due case
+        existingTodo.setStatus("past due");
+        TodoItemResponseDTO pastDueResult = todoService.changeTodoDescription(itemId, newDescription);
+        assertNull(pastDueResult);
+
+        // Reset status to not done
+        existingTodo.setStatus("not done");
+
         // Act and Assert for existing item case
         TodoItemResponseDTO result = todoService.changeTodoDescription(itemId, newDescription);
         assertNotNull(result);
@@ -89,10 +97,16 @@ class TodoServiceTest {
         when(todoItemRepository.findById(itemId)).thenReturn(Optional.of(existingTodo));
         when(todoItemRepository.save(any())).thenReturn(new TodoItemEntity(itemId, "Task 1", "done", LocalDateTime.now(), LocalDateTime.now(), null));
 
-        // Act
-        TodoItemResponseDTO result = todoService.markTodoAsDone(itemId);
+        // Act and Assert for past due case
+        existingTodo.setStatus("past due");
+        TodoItemResponseDTO pastDueResult = todoService.markTodoAsDone(itemId);
+        assertNull(pastDueResult);
 
-        // Assert
+        // Reset status to not done
+        existingTodo.setStatus("not done");
+
+        // Act and Assert for non-past due case
+        TodoItemResponseDTO result = todoService.markTodoAsDone(itemId);
         assertNotNull(result);
         assertEquals(expectedResponse.getDescription(), result.getDescription());
         assertEquals(expectedResponse.getStatus(), result.getStatus());
@@ -109,10 +123,16 @@ class TodoServiceTest {
         when(todoItemRepository.findById(itemId)).thenReturn(Optional.of(existingTodo));
         when(todoItemRepository.save(any())).thenReturn(new TodoItemEntity(itemId, "Task 1", "not done", LocalDateTime.now(), null, null));
 
-        // Act
-        TodoItemResponseDTO result = todoService.markTodoAsNotDone(itemId);
+        // Act and Assert for past due case
+        existingTodo.setStatus("past due");
+        TodoItemResponseDTO pastDueResult = todoService.markTodoAsNotDone(itemId);
+        assertNull(pastDueResult);
 
-        // Assert
+        // Reset status to done
+        existingTodo.setStatus("done");
+
+        // Act and Assert for non-past due case
+        TodoItemResponseDTO result = todoService.markTodoAsNotDone(itemId);
         assertNotNull(result);
         assertEquals(expectedResponse.getDescription(), result.getDescription());
         assertEquals(expectedResponse.getStatus(), result.getStatus());

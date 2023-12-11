@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TodoServiceImpl implements TodoService {
@@ -32,7 +33,12 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public TodoItemResponseDTO changeTodoDescription(Long itemId, String newDescription) {
-        return null;
+        TodoItemEntity todoItemEntity = getTodoItemEntity(itemId);
+        if (todoItemEntity != null) {
+            todoItemEntity.setDescription(newDescription);
+            return mapEntityToResponseDTO(todoItemEntity);
+        }
+        return null; // Item not found
     }
 
     @Override
@@ -64,5 +70,10 @@ public class TodoServiceImpl implements TodoService {
         dto.setDueDateTime(entity.getDueDateTime());
         dto.setDoneDateTime(entity.getDoneDateTime());
         return dto;
+    }
+
+    private TodoItemEntity getTodoItemEntity(Long itemId) {
+        Optional<TodoItemEntity> optionalTodoItemEntity = todoItemRepository.findById(itemId);
+        return optionalTodoItemEntity.orElse(null);
     }
 }

@@ -11,9 +11,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
@@ -51,4 +51,30 @@ class TodoServiceTest {
         assertEquals(expectedResponse.getDueDateTime(), result.getDueDateTime());
         assertEquals(expectedResponse.getDoneDateTime(), result.getDoneDateTime());
     }
+
+    @Test
+    void changeTodoDescriptionTest() {
+        // Arrange
+        Long itemId = 1L;
+        String newDescription = "New Description";
+        TodoItemEntity existingTodo = new TodoItemEntity(itemId, "Task 1", "not done", LocalDateTime.now(), null, null);
+        TodoItemResponseDTO expectedResponse = new TodoItemResponseDTO(itemId, newDescription, "not done", LocalDateTime.now(), null, null);
+
+        // For the non-existent item case
+        when(todoItemRepository.findById(itemId)).thenReturn(Optional.empty());
+
+        // For the existing item case
+        when(todoItemRepository.findById(itemId)).thenReturn(Optional.of(existingTodo));
+        when(todoItemRepository.save(any())).thenReturn(new TodoItemEntity(itemId, newDescription, "not done", LocalDateTime.now(), null, null));
+
+        // Act and Assert for non-existent item case
+        TodoItemResponseDTO nonExistentResult = todoService.changeTodoDescription(2L, newDescription);
+        assertNull(nonExistentResult);
+
+        // Act and Assert for existing item case
+        TodoItemResponseDTO result = todoService.changeTodoDescription(itemId, newDescription);
+        assertNotNull(result);
+        assertEquals(expectedResponse.getDescription(), result.getDescription());
+    }
+
 }

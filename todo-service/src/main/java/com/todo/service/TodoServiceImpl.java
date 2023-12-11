@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +44,7 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public TodoItemResponseDTO markTodoAsDone(Long itemId) {
-        return null;
+        return updateStatus(itemId, "done");
     }
 
     @Override
@@ -75,5 +76,20 @@ public class TodoServiceImpl implements TodoService {
     private TodoItemEntity getTodoItemEntity(Long itemId) {
         Optional<TodoItemEntity> optionalTodoItemEntity = todoItemRepository.findById(itemId);
         return optionalTodoItemEntity.orElse(null);
+    }
+
+    private TodoItemResponseDTO updateStatus(Long itemId, String newStatus) {
+        TodoItemEntity todoItemEntity = getTodoItemEntity(itemId);
+        if (todoItemEntity != null) {
+            todoItemEntity.setStatus(newStatus);
+            if ("done".equals(newStatus)) {
+                todoItemEntity.setDoneDateTime(LocalDateTime.now());
+            } else {
+                todoItemEntity.setDoneDateTime(null);
+            }
+
+            return mapEntityToResponseDTO(todoItemEntity);
+        }
+        return null; // Item not found
     }
 }

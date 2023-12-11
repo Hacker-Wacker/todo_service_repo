@@ -5,6 +5,7 @@ import com.todo.dao.TodoItemRepository;
 import com.todo.dto.TodoItemDTO;
 import com.todo.dto.TodoItemResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,6 +85,17 @@ public class TodoServiceImpl implements TodoService {
     public TodoItemResponseDTO getTodoItemDetails(Long itemId) {
         TodoItemEntity todoItemEntity = getTodoItemEntity(itemId);
         return todoItemEntity != null ? mapEntityToResponseDTO(todoItemEntity) : null;
+    }
+
+    @Scheduled(fixedRate = 60000) // Runs every minute (adjust as needed)
+    public void updateStatusForOverdueItems() {
+        List<TodoItemEntity> overdueItems = todoItemRepository.findByDueDateTimeBeforeAndStatusNot(
+                LocalDateTime.now(), "done");
+
+        for (TodoItemEntity overdueItem : overdueItems) {
+            overdueItem.setStatus("past due");
+            todoItemRepository.save(overdueItem);
+        }
     }
 
     private TodoItemResponseDTO mapEntityToResponseDTO(TodoItemEntity entity) {

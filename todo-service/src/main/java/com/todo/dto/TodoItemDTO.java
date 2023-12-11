@@ -22,7 +22,7 @@ public class TodoItemDTO {
         this.id = id;
         this.description = description;
         this.status = status;
-        this.creationDateTime = LocalDateTime.now();
+        this.creationDateTime = creationDateTime;
         this.dueDateTime = dueDateTime;
         this.doneDateTime = doneDateTime;
     }

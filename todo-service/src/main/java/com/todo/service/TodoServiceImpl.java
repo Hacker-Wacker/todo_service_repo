@@ -34,6 +34,7 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
+    @Transactional
     public TodoItemResponseDTO changeTodoDescription(Long itemId, String newDescription) {
         TodoItemEntity todoItemEntity = getTodoItemEntity(itemId);
         if (todoItemEntity != null) {
@@ -44,16 +45,19 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
+    @Transactional
     public TodoItemResponseDTO markTodoAsDone(Long itemId) {
         return updateStatus(itemId, "done");
     }
 
     @Override
+    @Transactional
     public TodoItemResponseDTO markTodoAsNotDone(Long itemId) {
         return updateStatus(itemId, "not done");
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TodoItemResponseDTO> getTodoItems() {
         List<TodoItemEntity> notDoneItems = todoItemRepository.findByStatus("not done");
         return notDoneItems.stream()

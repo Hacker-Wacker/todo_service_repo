@@ -62,8 +62,10 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TodoItemResponseDTO getTodoItemDetails(Long itemId) {
-        return null;
+        TodoItemEntity todoItemEntity = getTodoItemEntity(itemId);
+        return todoItemEntity != null ? mapEntityToResponseDTO(todoItemEntity) : null;
     }
 
     private TodoItemResponseDTO mapEntityToResponseDTO(TodoItemEntity entity) {
